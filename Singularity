@@ -31,6 +31,7 @@ From: centos:latest
     openmpi \
     openmpi-devel \
     tcl-devel \
+	time \
 	tk-devel \
     wget \
     which \

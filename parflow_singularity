@@ -1,7 +1,7 @@
 Bootstrap: docker
 From: centos:latest
 %labels
-MAINTAINER Steven Smith <smith84@llnl.gov>
+# Modified from Dockerfile written and maintained by Steven Smith <smith84@llnl.gov>
 %post
 #RMM ParFlow test
 

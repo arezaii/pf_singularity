@@ -55,7 +55,7 @@ From: centos:latest
     tar -xf silo-4.10.2.tar.gz && \
     cd silo-4.10.2 && \
     ./configure  --prefix=$PARFLOW_DIR --disable-silex --disable-hzip --disable-fpzip FC=/usr/bin/gfortran F77=/usr/bin/gfortran && \
-    make install -j4 && \
+    make install -j2 && \
     cd .. && \
     rm -fr silo-4.10.2 silo-4.10.2.tar.gz
     
@@ -68,7 +68,7 @@ From: centos:latest
     git clone -b master --single-branch https://github.com/LLNL/hypre.git hypre && \
     cd hypre/src && \
     ./configure --prefix=$PARFLOW_DIR && \
-    make install -j4 && \
+    make install -j2 && \
     cd ../.. && \
     rm -fr hypre
     
@@ -92,7 +92,7 @@ From: centos:latest
     -DPARFLOW_ENABLE_TIMING=TRUE \
     -DPARFLOW_HAVE_CLM=ON \
     -DCMAKE_INSTALL_PREFIX=$PARFLOW_DIR && \
-    make install -j4 && \
+    make install -j2 && \
     cd .. && \
     rm -fr parflow build
 

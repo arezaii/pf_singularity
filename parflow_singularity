@@ -95,7 +95,8 @@ make install && \
 cd .. && \
 rm -fr parflow build
 
-cd /data
+# unsure what /data is and why we cd to it?
+# cd /data
 
 %environment
 export CMAKE_DIR=/home/parflow/cmake-3.14.5-Linux-x86_64
@@ -104,8 +105,10 @@ export PATH=$PATH:/usr/lib64/openmpi/bin:$CMAKE_DIR/bin:$PARFLOW_DIR/bin
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64/openmpi/lib
 export PARFLOW_MPIEXEC_EXTRA_FLAGS="--mca mpi_yield_when_idle 1 --oversubscribe --allow-run-as-root"
 %runscript
-cd /data
+# unsure what /data is and why we cd to it?
+# cd /data
 exec tclsh "$@"
 %startscript
-cd /data
+# unsure what /data is and why we cd to it?
+# cd /data
 exec tclsh "$@"

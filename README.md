@@ -16,3 +16,13 @@ example of running the LW test case in `parflow/test/washita/tcl_scripts` direct
 ```bash
 $ singularity run /tmp/parflow.sif LW_Test.tcl
 ```
+
+## Pull from Singularity Hub
+
+```bash
+$ singularity pull shub://arezaii/pf_singularity
+```
+then to use it:
+```bash
+singularity run pf_singularity_latest.sif LW_Test.tcl
+```

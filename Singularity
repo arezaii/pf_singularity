@@ -18,6 +18,7 @@ From: centos:latest
 	automake \
 	binutils \
 	cmake3 \
+	file \
     gcc  \
     gcc-c++  \
     gcc-gfortran \
@@ -28,8 +29,6 @@ From: centos:latest
     hdf5 \
 	libtool \
     make \
-    openmpi \
-    openmpi-devel \
     tcl-devel \
 	time \
 	tk-devel \
@@ -44,11 +43,35 @@ From: centos:latest
     PARFLOW_DIR=/usr/local
     PATH=$PATH:/usr/lib64/openmpi/bin:$PARFLOW_DIR/bin
     LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64/openmpi/lib
+    OMPI_DIR=/opt/ompi
+    SINGULARITY_OMPI_DIR=$OMPI_DIR
+    SINGULARITYENV_APPEND_PATH=$OMPI_DIR/bin
+    SINGULAIRTYENV_APPEND_LD_LIBRARY_PATH=$OMPI_DIR/lib
     
     #-----------------------------------------------------------------------------
     # Build libraries
     #-----------------------------------------------------------------------------
     
+    #
+    # OMPI
+    # 
+    echo "Installing Open MPI"
+    export OMPI_DIR=/opt/ompi
+    export OMPI_VERSION=4.0.1
+    export
+	OMPI_URL="https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-$OMPI_VERSION.tar.gz"
+    mkdir -p /tmp/ompi
+    mkdir -p /opt
+    # Download
+    cd /tmp/ompi && wget -O openmpi-$OMPI_VERSION.tar.gz $OMPI_URL && tar -xf openmpi-$OMPI_VERSION.tar.gz
+    # Compile and install
+    cd /tmp/ompi/openmpi-$OMPI_VERSION && ./configure --prefix=$OMPI_DIR && make install -j2
+    # Set env variables so we can
+	# compile our application
+    export PATH=$OMPI_DIR/bin:$PATH
+    export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
+    export MANPATH=$OMPI_DIR/share/man:$MANPATH
+
     #
     # SILO 
     #
@@ -102,6 +125,10 @@ From: centos:latest
     export PATH=$PATH:/usr/lib64/openmpi/bin:$PARFLOW_DIR/bin
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64/openmpi/lib
     export PARFLOW_MPIEXEC_EXTRA_FLAGS="--mca mpi_yield_when_idle 1 --oversubscribe --allow-run-as-root"
+    export OMPI_DIR=/opt/ompi
+    export SINGULARITY_OMPI_DIR=$OMPI_DIR
+    export SINGULARITYENV_APPEND_PATH=$OMPI_DIR/bin
+    export SINGULAIRTYENV_APPEND_LD_LIBRARY_PATH=$OMPI_DIR/lib
 
 %runscript
     exec tclsh "$@"

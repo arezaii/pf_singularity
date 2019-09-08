@@ -8,7 +8,7 @@ Get Parflow built in a singularity container for distribution
 
 ## To Build Container
 ```bash
-$ sudo singularity build /tmp/parflow.sif parflow_singularity
+$ sudo singularity build /tmp/parflow.sif Singularity
 ```
 
 ## To Use Parflow in Container

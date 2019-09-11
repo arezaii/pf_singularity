@@ -2,7 +2,7 @@
 Get Parflow built in a singularity container for distribution
 
 ## Prerequisits
-- Host OS must have OPENMPI installed
+- Host OS must have OpenMPI installed
 - Host OS must have Singularity installed
 - To build container from recipe file, user must have root access
 

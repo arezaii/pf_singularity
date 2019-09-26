@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: centos:latest
+From: centos:7.4.1708
 %labels
     # Modified from Dockerfile written and maintained by Steven Smith <smith84@llnl.gov>
 %post
@@ -14,22 +14,32 @@ From: centos:latest
     #-----------------------------------------------------------------------------
     yum -y  install  epel-release
     yum  install -y  \
+	atk \
 	autoconf \
 	automake \
 	binutils \
+	cairo \
 	cmake3 \
+	createrepo \
+	ethtool \
 	file \
     gcc  \
     gcc-c++  \
     gcc-gfortran \
     git \
+	gtk2 \
     hdf5-devel \
     hdf5-openmpi \
     hdf5-openmpi-devel \
     hdf5 \
 	libtool \
+	lsof \
     make \
+	python-devel \
+	redhat-rpm-config \
+	rpm-build \
     tcl-devel \
+	tcsh \
 	time \
 	tk-devel \
     wget \
@@ -47,7 +57,22 @@ From: centos:latest
     SINGULARITY_OMPI_DIR=$OMPI_DIR
     SINGULARITYENV_APPEND_PATH=$OMPI_DIR/bin
     SINGULAIRTYENV_APPEND_LD_LIBRARY_PATH=$OMPI_DIR/lib
-    
+	
+    #-----------------------------------------------------------------------------
+    # Install Mellanox Driver for Infiniband Support within container
+    #-----------------------------------------------------------------------------
+	yum install -y http://vault.centos.org/7.4.1708/updates/x86_64/Packages/kernel-devel-3.10.0-693.17.1.el7.x86_64.rpm
+	OFED_URL="http://www.mellanox.com/downloads/ofed/MLNX_OFED-4.6-1.0.1.1/MLNX_OFED_LINUX-4.6-1.0.1.1-rhel7.4-x86_64.tgz" 
+	
+	mkdir -p /tmp/mlx
+
+	cd /tmp/mlx && wget -O MLNX_OFED_LINUX-4.6-1.0.1.1-rhel7.4-x86_64.tgz $OFED_URL && \
+	tar -xf MLNX_OFED_LINUX-4.6-1.0.1.1-rhel7.4-x86_64.tgz && \
+	cd MLNX_OFED_LINUX-4.6-1.0.1.1-rhel7.4-x86_64/ && \
+	./mlnxofedinstall --without-fw-update --force --skip-distro-check --distro rhel7.4 --add-kernel-support --kernel 3.10.0-693.17.1.el7.x86_64 --kernel-sources /usr/src/kernels/3.10.0-693.17.1.el7.x86_64
+	
+
+
     #-----------------------------------------------------------------------------
     # Build libraries
     #-----------------------------------------------------------------------------

@@ -2,46 +2,29 @@ Bootstrap: docker
 From: centos:7.4.1708
 %labels
     # Modified from Dockerfile written and maintained by Steven Smith <smith84@llnl.gov>
-%post
-    #RMM ParFlow test
-    
-    #-----------------------------------------------------------------------------
-    # start by building the basic container
-    #-----------------------------------------------------------------------------
-    
+%post    
+
     #-----------------------------------------------------------------------------
     #  Package dependencies
     #-----------------------------------------------------------------------------
     yum -y  install  epel-release
     yum  install -y  \
-	atk \
-	autoconf \
-	automake \
-	binutils \
-	cairo \
-	cmake3 \
-	createrepo \
-	ethtool \
-	file \
+    autoconf \
+    automake \
+    binutils \
+    cmake3 \
+    file \
     gcc  \
     gcc-c++  \
     gcc-gfortran \
     git \
-	gtk2 \
-    hdf5-devel \
-    hdf5-openmpi \
-    hdf5-openmpi-devel \
-    hdf5 \
-	libtool \
-	lsof \
+    libtool \
+    lsof \
     make \
-	python-devel \
-	redhat-rpm-config \
-	rpm-build \
     tcl-devel \
-	tcsh \
-	time \
-	tk-devel \
+    tcsh \
+    time \
+    tk-devel \
     wget \
     which \
     zlib \
@@ -50,27 +33,14 @@ From: centos:7.4.1708
     #-----------------------------------------------------------------------------
     # Set environment vars
     #-----------------------------------------------------------------------------
-    PARFLOW_DIR=/usr/local
+    export PARFLOW_DIR=/usr/local
     PATH=$PATH:/usr/lib64/openmpi/bin:$PARFLOW_DIR/bin
-    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib64/openmpi/lib
+    LD_LIBRARY_PATH=/usr/lib64/openmpi/lib:$LD_LIBRARY_PATH
     OMPI_DIR=/opt/ompi
-    SINGULARITY_OMPI_DIR=$OMPI_DIR
-    SINGULARITYENV_APPEND_PATH=$OMPI_DIR/bin
-    SINGULAIRTYENV_APPEND_LD_LIBRARY_PATH=$OMPI_DIR/lib
-	
-    #-----------------------------------------------------------------------------
-    # Install Mellanox Driver for Infiniband Support within container
-    #-----------------------------------------------------------------------------
-	yum install -y http://vault.centos.org/7.4.1708/updates/x86_64/Packages/kernel-devel-3.10.0-693.17.1.el7.x86_64.rpm
-	OFED_URL="http://www.mellanox.com/downloads/ofed/MLNX_OFED-4.6-1.0.1.1/MLNX_OFED_LINUX-4.6-1.0.1.1-rhel7.4-x86_64.tgz" 
-	
-	mkdir -p /tmp/mlx
+    #SINGULARITY_OMPI_DIR=$OMPI_DIR
+    #SINGULARITYENV_APPEND_PATH=$OMPI_DIR/bin
+    #SINGULAIRTYENV_APPEND_LD_LIBRARY_PATH=$OMPI_DIR/lib
 
-	cd /tmp/mlx && wget -O MLNX_OFED_LINUX-4.6-1.0.1.1-rhel7.4-x86_64.tgz $OFED_URL && \
-	tar -xf MLNX_OFED_LINUX-4.6-1.0.1.1-rhel7.4-x86_64.tgz && \
-	cd MLNX_OFED_LINUX-4.6-1.0.1.1-rhel7.4-x86_64/ && \
-	./mlnxofedinstall --without-fw-update --force --skip-distro-check --distro rhel7.4 --add-kernel-support --kernel 3.10.0-693.17.1.el7.x86_64 --kernel-sources /usr/src/kernels/3.10.0-693.17.1.el7.x86_64
-	
 
 
     #-----------------------------------------------------------------------------
@@ -83,8 +53,7 @@ From: centos:7.4.1708
     echo "Installing Open MPI"
     export OMPI_DIR=/opt/ompi
     export OMPI_VERSION=4.0.1
-    export
-	OMPI_URL="https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-$OMPI_VERSION.tar.gz"
+    export OMPI_URL="https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-$OMPI_VERSION.tar.gz"
     mkdir -p /tmp/ompi
     mkdir -p /opt
     # Download
@@ -92,10 +61,46 @@ From: centos:7.4.1708
     # Compile and install
     cd /tmp/ompi/openmpi-$OMPI_VERSION && ./configure --prefix=$OMPI_DIR && make install -j2
     # Set env variables so we can
-	# compile our application
+    # compile our application
     export PATH=$OMPI_DIR/bin:$PATH
     export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
     export MANPATH=$OMPI_DIR/share/man:$MANPATH
+
+    #
+    # HDF5
+    #
+    echo "Installing HDF5"
+    mkdir -p /tmp/hdf5
+    cd /tmp/hdf5
+
+    wget -q https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.5/src/hdf5-1.10.5.tar.gz && \
+    tar -xf hdf5-1.10.5.tar.gz && \
+    cd hdf5-1.10.5 && \
+    CC=mpicc ./configure \
+      --prefix=$PARFLOW_DIR \
+      --enable-parallel && \
+    make && make install && \
+    cd .. && \
+    rm -fr hdf5-1.10.5 hdf5-1.10.5.tar.gz
+
+
+    #
+    # NetCDF
+    #
+    echo "Installing NetCDF"
+    mkdir -p /tmp/netcdf
+    cd /tmp/netcdf
+
+    wget -q https://github.com/Unidata/netcdf-c/archive/v4.7.3.tar.gz && \
+    tar -xf v4.7.3.tar.gz && \
+    cd netcdf-c-4.7.3 && \
+    CC=mpicc CPPFLAGS=-I${PARFLOW_DIR}/include LDFLAGS=-L${PARFLOW_DIR}/lib \
+    ./configure --disable-shared --disable-dap --prefix=${PARFLOW_DIR} && \
+    make && \
+    make install && \
+    cd .. && \
+    rm -fr netcdf-c-4.7.3 v4.7.3.tar.gz
+
 
     #
     # SILO 
@@ -112,8 +117,6 @@ From: centos:7.4.1708
     # Hypre
     #
     cd /home/parflow
-    source /etc/profile.d/modules.sh && \
-    module load mpi/openmpi-x86_64 && \
     git clone -b master --single-branch https://github.com/LLNL/hypre.git hypre && \
     cd hypre/src && \
     ./configure --prefix=$PARFLOW_DIR && \
@@ -137,9 +140,13 @@ From: centos:7.4.1708
     -DPARFLOW_AMPS_SEQUENTIAL_IO=FALSE \
     -DHYPRE_ROOT=$PARFLOW_DIR \
     -DSILO_ROOT=$PARFLOW_DIR \
-	-DPARFLOW_ENABLE_HDF5=TRUE \
+    -DPARFLOW_ENABLE_HDF5=TRUE \
     -DPARFLOW_ENABLE_TIMING=TRUE \
+    -DPARFLOW_ENABLE_NETCDF=TRUE \
     -DPARFLOW_HAVE_CLM=ON \
+    -DPARFLOW_ENABLE_NETCDF=TRUE \
+    -DNETCDF_INCLUDE_DIR=${PARFLOW_DIR}/include \
+    -DNETCDF_LIBRARY=${PARFLOW_DIR}/lib/libnetcdf.a \
     -DCMAKE_INSTALL_PREFIX=$PARFLOW_DIR && \
     make install -j2 && \
     cd .. && \

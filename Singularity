@@ -132,7 +132,7 @@ From: centos:7.4.1708
     
     cd /home/parflow
     
-    git clone -b master --single-branch https://github.com/parflow/parflow.git parflow && \
+    git clone -b pf_omp --single-branch https://github.com/hydroframe/Parflow_perfteam.git parflow && \
     mkdir -p build && \
     cd build && \
     cmake3 ../parflow \
@@ -142,11 +142,12 @@ From: centos:7.4.1708
     -DSILO_ROOT=$PARFLOW_DIR \
     -DPARFLOW_ENABLE_HDF5=TRUE \
     -DPARFLOW_ENABLE_TIMING=TRUE \
-    -DPARFLOW_ENABLE_NETCDF=TRUE \
     -DPARFLOW_HAVE_CLM=ON \
     -DPARFLOW_ENABLE_NETCDF=TRUE \
     -DNETCDF_INCLUDE_DIR=${PARFLOW_DIR}/include \
     -DNETCDF_LIBRARY=${PARFLOW_DIR}/lib/libnetcdf.a \
+    -DPARFLOW_ENABLE_OMP=true \
+    -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=$PARFLOW_DIR && \
     make install -j2 && \
     cd .. && \

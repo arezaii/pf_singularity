@@ -5,7 +5,9 @@ From: arezaii/pf_singularity:libs
 %labels
     # Add ParFlow to base with libs
 %post    
-      
+    
+    #useradd -ms /bin/bash parflow
+    mkdir -p /home/parflow/pflib
     su - parflow
     cd /home/parflow
 

@@ -4,12 +4,10 @@ From: arezaii/pf_singularity:base
     # Build the necessary LIBS for ParFlow on top of base OS image
 %post    
 
-    
-    useradd -ms /bin/bash parflow
-    su - parflow
-    cd /home/parflow
-
+    #useradd -ms /bin/bash parflow
+    #su - parflow
     mkdir -p /home/parflow/pflib
+    cd /home/parflow
     export CORE_COUNT=2
 
     #-----------------------------------------------------------------------------
@@ -44,10 +42,11 @@ From: arezaii/pf_singularity:base
     echo "Installing HDF5"
     export HDF5_DIR=/home/parflow/pflib/hdf5
     export HDF5_VERSION=1.10.5
+    export HDF5_URL="https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-${HDF5_VERSION}/src/hdf5-${HDF5_VERSION}.tar.gz"
     mkdir -p $HDF5_DIR
     mkdir -p /tmp/hdf5
     cd /tmp/hdf5 && \
-    wget https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-${HDF5_VERSION}/src/hdf5-${HDF5_VERSION}.tar.gz && \
+    wget ${HDF5_URL} && \
     tar -xf hdf5-${HDF5_VERSION}.tar.gz && \
     cd hdf5-${HDF5_VERSION} && \
     CC=mpicc ./configure \
@@ -64,11 +63,12 @@ From: arezaii/pf_singularity:base
     echo "Installing NetCDF"
     export NETCDF_DIR=/home/parflow/pflib/netcdf
     export NETCDF_VERSION=4.7.3
+    export NETCDF_URL="https://github.com/Unidata/netcdf-c/archive/v$NETCDF_VERSION.tar.gz"
     mkdir -p $NETCDF_DIR
     mkdir -p /tmp/netcdf
     cd /tmp/netcdf
 
-    wget https://github.com/Unidata/netcdf-c/archive/v$NETCDF_VERSION.tar.gz && \
+    wget ${NETCDF_URL} && \
     tar -xf v${NETCDF_VERSION}.tar.gz && \
     cd netcdf-c-${NETCDF_VERSION} && \
     CC=mpicc CPPFLAGS=-I${HDF5_DIR}/include LDFLAGS=-L${HDF5_DIR}/lib \
@@ -84,7 +84,7 @@ From: arezaii/pf_singularity:base
     #
     echo "Installing SILO"
     export SILO_DIR=/home/parflow/pflib/silo
-    export SILO_VERSION=4.10.2
+    export SILO_VERSION=4.10.2    
     mkdir -p $SILO_DIR
     mkdir -p /tmp/silo
     cd /tmp/silo
@@ -114,10 +114,3 @@ From: arezaii/pf_singularity:base
     make install -j${CORE_COUNT} && \
     cd ../.. && \
     rm -fr hypre-${HYPRE_VERSION} v${HYPRE_VERSION}.tar.gz
-
-    #git clone -b master --single-branch https://github.com/LLNL/hypre.git hypre && \
-    #cd hypre/src && \
-    #./configure --prefix=$PARFLOW_DIR && \
-    #make install -j${CORE_COUNT} && \
-    #cd ../.. && \
-    #rm -fr hypre

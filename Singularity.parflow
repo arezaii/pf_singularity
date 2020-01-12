@@ -4,11 +4,16 @@ Bootstrap: shub
 From: arezaii/pf_singularity:libs
 %labels
     # Add ParFlow to base with libs
+%help
+	no usage as-is, a middle layer in the build process to hold the librarires
+	to use in a another recipe file:
+	Bootstrap localimage
+	From: /path/to/singularity_libs
+
 %post    
     
     #useradd -ms /bin/bash parflow
-    mkdir -p /home/parflow/pflib
-    su - parflow
+    mkdir -p /home/parflow/pflib    
     cd /home/parflow
 
     

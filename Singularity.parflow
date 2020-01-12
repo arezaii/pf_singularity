@@ -10,7 +10,7 @@ From: shub://arezaii/pf_singularity:libs
     cd /home/parflow
 
     
-    export CORE_COUNT=4
+    export CORE_COUNT=2
     export PARFLOW_DIR=/home/parflow/pfdir
     export OMPI_DIR=/home/parflow/pflib/ompi
     export HDF5_DIR=/home/parflow/pflib/hdf5

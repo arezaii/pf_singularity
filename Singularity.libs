@@ -10,7 +10,7 @@ From: shub://arezaii/pf_singularity:base
     cd /home/parflow
 
     mkdir -p /home/parflow/pflib
-    export CORE_COUNT=4
+    export CORE_COUNT=2
 
     #-----------------------------------------------------------------------------
     # Build libraries

@@ -1,5 +1,5 @@
 Bootstrap: shub
-From: shub://arezaii/pf_singularity:base
+From: arezaii/pf_singularity:base
 %labels
     # Build the necessary LIBS for ParFlow on top of base OS image
 %post    

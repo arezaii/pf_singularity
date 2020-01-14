@@ -1,14 +1,12 @@
-#Bootstrap: localimage
-#From: ./singularity_libs
-Bootstrap: shub
-From: arezaii/pf_singularity:libs
+Bootstrap: localimage
+From: ./singularity_libs
+
+#Bootstrap: shub
+#From: arezaii/pf_singularity:libs
+
 %labels
     # Add ParFlow to base with libs
-%help
-	no usage as-is, a middle layer in the build process to hold the librarires
-	to use in a another recipe file:
-	Bootstrap localimage
-	From: /path/to/singularity_libs
+
 
 %post    
     
@@ -19,13 +17,13 @@ From: arezaii/pf_singularity:libs
     
     export CORE_COUNT=2
     export PARFLOW_DIR=/home/parflow/pfdir
-    export OMPI_DIR=/home/parflow/pflib/ompi
+    export MPI_DIR=/home/parflow/pflib/mpich
     export HDF5_DIR=/home/parflow/pflib/hdf5
     export NETCDF_DIR=/home/parflow/pflib/netcdf
     export SILO_DIR=/home/parflow/pflib/silo
     export HYPRE_DIR=/home/parflow/pflib/hypre
-    export PATH=${OMPI_DIR}/bin:$PATH
-    export LD_LIBRARY_PATH=/home/parflow/pflib/ompi/lib:$LD_LIBRARY_PATH
+    export PATH=${MPI_DIR}/bin:$PATH
+    export LD_LIBRARY_PATH=${HDF5_DIR}/lib:${MPI_DIR}/lib:$LD_LIBRARY_PATH
     
     #-----------------------------------------------------------------------------
     # Parflow configure and build
@@ -36,6 +34,8 @@ From: arezaii/pf_singularity:libs
     git clone -b master --single-branch https://github.com/parflow/parflow.git parflow && \
     mkdir -p build && \
     cd build && \
+    CC=mpicc
+    CXX=mpicxx
     cmake3 ../parflow \
     -DPARFLOW_AMPS_LAYER=mpi1 \
     -DPARFLOW_AMPS_SEQUENTIAL_IO=FALSE \
@@ -51,9 +51,14 @@ From: arezaii/pf_singularity:libs
     rm -fr parflow build
 
 %environment
-    export PARFLOW_DIR=/home/parflow/pfdir
-    export PATH=/home/parflow/pflib/ompi/bin:$PATH
-    export LD_LIBRARY_PATH=/home/parflow/pflib/ompi/lib:$LD_LIBRARY_PATH
+    #export PARFLOW_DIR=/home/parflow/pfdir
+    export MPI_DIR=/home/parflow/pflib/mpich
+    export HDF5_DIR=/home/parflow/pflib/hdf5
+    export NETCDF_DIR=/home/parflow/pflib/netcdf
+    export SILO_DIR=/home/parflow/pflib/silo
+    export HYPRE_DIR=/home/parflow/pflib/hypre
+    export PATH=${MPI_DIR}/bin:$PATH
+    export LD_LIBRARY_PATH=${HDF5_DIR}/lib:${MPI_DIR}/lib:$LD_LIBRARY_PATH
     #export PARFLOW_MPIEXEC_EXTRA_FLAGS="--mca mpi_yield_when_idle 1 --oversubscribe --allow-run-as-root"
     #export OMPI_DIR=/opt/ompi
     #export SINGULARITY_OMPI_DIR=$OMPI_DIR
@@ -61,7 +66,9 @@ From: arezaii/pf_singularity:libs
     #export SINGULAIRTYENV_APPEND_LD_LIBRARY_PATH=$OMPI_DIR/lib
 
 %runscript
-    exec tclsh "$@"
+     exec tclsh "$@"
 
 %startscript
-    exec tclsh "$@"
+     exec tclsh "$@"
+
+

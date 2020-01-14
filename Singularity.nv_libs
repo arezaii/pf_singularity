@@ -1,7 +1,7 @@
-#Bootstrap: shub
-#From: arezaii/pf_singularity:nv_base
-Bootstrap: localimage
-From: ./singularity_nv_base
+Bootstrap: shub
+From: arezaii/pf_singularity:nv_base
+#Bootstrap: localimage
+#From: ./singularity_nv_base
 %labels
     # Build the necessary LIBS for ParFlow on top of base OS image
 %help

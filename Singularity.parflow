@@ -1,8 +1,8 @@
-Bootstrap: localimage
-From: ./singularity_libs
+#Bootstrap: localimage
+#From: ./singularity_libs
 
-#Bootstrap: shub
-#From: arezaii/pf_singularity:libs
+Bootstrap: shub
+From: arezaii/pf_singularity:libs
 
 %labels
     # Add ParFlow to base with libs

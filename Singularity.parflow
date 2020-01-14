@@ -51,7 +51,7 @@ From: arezaii/pf_singularity:libs
     rm -fr parflow build
 
 %environment
-    #export PARFLOW_DIR=/home/parflow/pfdir
+    export PARFLOW_DIR=/home/parflow/pfdir
     export MPI_DIR=/home/parflow/pflib/mpich
     export HDF5_DIR=/home/parflow/pflib/hdf5
     export NETCDF_DIR=/home/parflow/pflib/netcdf

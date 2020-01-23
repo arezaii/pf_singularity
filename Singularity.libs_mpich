@@ -1,7 +1,7 @@
 #Bootstrap: shub
 #From: arezaii/pf_singularity:base
 Bootstrap: localimage
-From: ./singularity_ompi
+From: ./singularity_mpich
 %labels
     # Build the necessary LIBS for ParFlow on top of base OS image
 %help
@@ -30,8 +30,8 @@ From: ./singularity_ompi
     #
     # OMPI
     # 
-    echo "Installing Open MPI"
-    export OMPI_DIR=${PARFLOW_LIB_DIR}/ompi
+    # echo "Installing Open MPI"
+    # export OMPI_DIR=${PARFLOW_LIB_DIR}/ompi
     # export OMPI_VERSION=4.0.1
     # export OMPI_URL="https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-$OMPI_VERSION.tar.gz"
     # mkdir -p ${DOWNLOAD_DIR}/ompi    
@@ -44,16 +44,16 @@ From: ./singularity_ompi
     # rm -fr ompi openmpi-$OMPI_VERSION.tar.gz
     # Set env variables so we can
     # compile our application
-    export PATH=$OMPI_DIR/bin:$PATH
-    export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
+    # export PATH=$OMPI_DIR/bin:$PATH
+    # export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
     #export MANPATH=$OMPI_DIR/share/man:$MANPATH
 
 
     #
     # MPICH
     #
-    # echo "Installing MPICH"
-    # export MPICH_DIR=${PARFLOW_LIB_DIR}/mpich
+    echo "Installing MPICH"
+    export MPICH_DIR=${PARFLOW_LIB_DIR}/mpich
     # export MPICH_VERSION=3.2.1
     # export MPICH_URL="http://www.mpich.org/static/downloads/${MPICH_VERSION}/mpich-${MPICH_VERSION}.tar.gz"
     # mkdir -p ${DOWNLOAD_DIR}/mpich    
@@ -66,8 +66,8 @@ From: ./singularity_ompi
     # rm -fr mpich mpich-$MPICH_VERSION.tar.gz
     # # Set env variables so we can
     # # compile our application
-    # export PATH=$MPICH_DIR/bin:$PATH
-    # export LD_LIBRARY_PATH=$MPICH_DIR/lib:$LD_LIBRARY_PATH
+    export PATH=$MPICH_DIR/bin:$PATH
+    export LD_LIBRARY_PATH=$MPICH_DIR/lib:$LD_LIBRARY_PATH
 
 
     #

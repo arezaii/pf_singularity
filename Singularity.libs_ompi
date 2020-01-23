@@ -1,5 +1,5 @@
 Bootstrap: shub
-From: arezaii/pf_singularity:base
+From: arezaii/pf_singularity:ompi
 #Bootstrap: localimage
 #From: ./singularity_ompi
 %labels

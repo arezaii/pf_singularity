@@ -1,8 +1,8 @@
-Bootstrap: localimage
-From: ./singularity_libs_ompi
+#Bootstrap: localimage
+#From: ./singularity_libs_ompi
 
-#Bootstrap: shub
-#From: arezaii/pf_singularity:libs
+Bootstrap: shub
+From: arezaii/pf_singularity:libs
 
 %labels
     A ParFlow container to be used with ompi base

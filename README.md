@@ -13,7 +13,7 @@ to run either:
 ```bash
 $ singularity run --app <app_name> <destination/path/to/singularity_container.sif> <.tcl input file>
 ```
-See more here:(https://sylabs.io/guides/3.3/user-guide/definition_files.html?highlight=apps#apps)[https://sylabs.io/guides/3.3/user-guide/definition_files.html?highlight=apps#apps]
+See more here:[https://sylabs.io/guides/3.3/user-guide/definition_files.html?highlight=apps#apps](https://sylabs.io/guides/3.3/user-guide/definition_files.html?highlight=apps#apps)
 for additional information about Apps in Singularity.
 
 ## Prerequisits

@@ -1,4 +1,4 @@
-# Parflow Singularity Definition Files
+# ParFlow Singularity Definition Files
 A set of singularity definition files that allow for building Singularity containers for ParFlow with
 either OMPI or MPICH mpi layers.
 
@@ -11,12 +11,12 @@ builds of ParFlow
 
 to run either:
 ```bash
-$ singularity run --app <app_name> <destination/path/to/singularity_container.sif> <.tcl input file>
+$ singularity run --app <app_name> </path/to/singularity_container.sif> <.tcl input file>
 ```
-See more here:[https://sylabs.io/guides/3.3/user-guide/definition_files.html?highlight=apps#apps](https://sylabs.io/guides/3.3/user-guide/definition_files.html?highlight=apps#apps)
-for additional information about Apps in Singularity.
+See additional information about [Apps in Singularity](https://sylabs.io/guides/3.3/user-guide/definition_files.html?highlight=apps#apps)
 
-## Prerequisits
+
+## Requirements
 - Host OS must have Singularity installed
 - To build container from recipe file, user must have root access
 
@@ -31,7 +31,7 @@ as a specific example:
 $ sudo singularity build ~/pf_singularity_ompi Singularity.parflow_ompi
 ```
 
-## To Use Parflow in Container
+## To Use ParFlow in Container
 example of running the LW test case in `parflow/test/washita/tcl_scripts` directory
 ```bash
 $ singularity run --app par ~/pf_singularity_ompi LW_Test.tcl
@@ -53,6 +53,8 @@ singularity run --app par pf_singularity_parflow_ompi.sif LW_Test.tcl
 Because singularity containers are immutable and ParFlow tests write to disk, you must expand the image to a writable sandbox.
 Unfortunately this requires super user access to do...
 
+### Make Container Writable
+
 First, create a writable sandbox from the immutable container using Singularity's build command:
 ```bash
 sudo singularity build --sandbox <directory_to_create_for_sandbox/> <singularity_container>
@@ -71,3 +73,26 @@ You can enter a console into the container now by using the Singularity shell co
 ```bash
 sudo singularity shell --writable <directory_to_create_for_sandbox/>
 ```
+
+### Run Tests
+
+After making the container writable and accessing it through a shell, both documented above, running the ParFlow
+tests can be done by changing directories and exporting the PARFLOW_DIR environment variable for either distributed 
+or sequential builds of ParFlow.
+
+Take note of the ParFlow build and install directories in the container:
+
+**Sequential Build**
+* build directory: /home/parflow/build_seq
+* install directory: /home/parflow/pfdir_seq
+
+**Distributed Build**
+* build directory: /home/parflow/build_par
+* install directory: /home/parflow/pfdir_par
+
+```bash
+> cd /home/parflow/<build_dir>
+> export PARFLOW_DIR=/home/parflow/<install_dir> 
+> make test
+```
+

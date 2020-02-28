@@ -11,14 +11,16 @@ From: centos:7.4.1708
     #-----------------------------------------------------------------------------
     #  Package dependencies
     #-----------------------------------------------------------------------------
-    yum -y  install  epel-release centos-release-scl
+    yum -y  install  epel-release
     yum  install -y  \
     autoconf \
     automake \
     binutils \
     cmake3 \
-    devtoolset-7 \
     file \
+    gcc  \
+    gcc-c++  \
+    gcc-gfortran \
     git \
     libtool \
     lsof \
@@ -30,4 +32,5 @@ From: centos:7.4.1708
     wget \
     which \
     zlib \
-    zlib-devel
+    zlib-devells
+    

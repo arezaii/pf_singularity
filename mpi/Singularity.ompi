@@ -16,8 +16,6 @@ From: arezaii/pf_singularity:base
     HOME_DIR=/home/parflow
     export PARFLOW_LIB_DIR=${HOME_DIR}/pflib
     export DOWNLOAD_DIR=${HOME_DIR}/downloads
-    export PATH=/opt/rh/devtoolset-7/root/bin/:$PATH
-    export LD_LIBRARY_PATH=/opt/rh/devtoolset-7/root/lib:$LD_LIBRARY_PATH
     mkdir -p ${PARFLOW_LIB_DIR}
     cd ${HOME_DIR}   
 
@@ -38,10 +36,9 @@ From: arezaii/pf_singularity:base
     cd ${DOWNLOAD_DIR}/ompi && wget -O openmpi-$OMPI_VERSION.tar.gz $OMPI_URL && tar -xf openmpi-$OMPI_VERSION.tar.gz
     # Compile and install
     cd ${DOWNLOAD_DIR}/ompi/openmpi-$OMPI_VERSION && ./configure --prefix=$OMPI_DIR && make install -j${CORE_COUNT}
-    cd ../..
+    cd ..
     rm -fr ompi openmpi-$OMPI_VERSION.tar.gz
     # Set env variables so we can
     # compile our application
     export PATH=$OMPI_DIR/bin:$PATH
     export LD_LIBRARY_PATH=$OMPI_DIR/lib:$LD_LIBRARY_PATH
-    #export MANPATH=$OMPI_DIR/share/man:$MANPATH

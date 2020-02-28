@@ -11,8 +11,6 @@ From: arezaii/pf_singularity:ompi
     From: /path/to/singularity_libs
 
 %post    
-    export PATH=/opt/rh/devtoolset-7/root/bin/:$PATH
-    export LD_LIBRARY_PATH=/opt/rh/devtoolset-7/root/lib:$LD_LIBRARY_PATH
     export CORE_COUNT=$(nproc)
     HOME_DIR=/home/parflow
     export PARFLOW_LIB_DIR=${HOME_DIR}/pflib

@@ -4,19 +4,21 @@ From: centos:7.4.1708
     # A base OS image to use for building ParFlow 
 %post    
 
+    # update OS
+
+    yum -y update
+
     #-----------------------------------------------------------------------------
     #  Package dependencies
     #-----------------------------------------------------------------------------
-    yum -y  install  epel-release
+    yum -y  install  epel-release centos-release-scl
     yum  install -y  \
     autoconf \
     automake \
     binutils \
     cmake3 \
+    devtoolset-7 \
     file \
-    gcc  \
-    gcc-c++  \
-    gcc-gfortran \
     git \
     libtool \
     lsof \
@@ -28,5 +30,4 @@ From: centos:7.4.1708
     wget \
     which \
     zlib \
-    zlib-devel 
-
+    zlib-devel

@@ -1,7 +1,7 @@
 Bootstrap: shub
-From: arezaii/pf_singularity:nv_base
+From: arezaii/pf_singularity:base
 #Bootstrap: localimage
-#From: ./singularity_nv_base
+#From: ./singularity_ompi
 %labels
     # Build the necessary LIBS for ParFlow on top of base OS image
 %help
@@ -32,16 +32,16 @@ From: arezaii/pf_singularity:nv_base
     # 
     echo "Installing Open MPI"
     export OMPI_DIR=${PARFLOW_LIB_DIR}/ompi
-    export OMPI_VERSION=4.0.1
-    export OMPI_URL="https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-$OMPI_VERSION.tar.gz"
-    mkdir -p ${DOWNLOAD_DIR}/ompi    
-    mkdir -p $OMPI_DIR
-    # Download
-    cd ${DOWNLOAD_DIR}/ompi && wget -O openmpi-$OMPI_VERSION.tar.gz $OMPI_URL && tar -xf openmpi-$OMPI_VERSION.tar.gz
-    # Compile and install
-    cd ${DOWNLOAD_DIR}/ompi/openmpi-$OMPI_VERSION && ./configure --prefix=$OMPI_DIR && make install -j${CORE_COUNT}
-    cd ../..
-    rm -fr ompi openmpi-$OMPI_VERSION.tar.gz
+    # export OMPI_VERSION=4.0.1
+    # export OMPI_URL="https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-$OMPI_VERSION.tar.gz"
+    # mkdir -p ${DOWNLOAD_DIR}/ompi    
+    # mkdir -p $OMPI_DIR
+    # # Download
+    # cd ${DOWNLOAD_DIR}/ompi && wget -O openmpi-$OMPI_VERSION.tar.gz $OMPI_URL && tar -xf openmpi-$OMPI_VERSION.tar.gz
+    # # Compile and install
+    # cd ${DOWNLOAD_DIR}/ompi/openmpi-$OMPI_VERSION && ./configure --prefix=$OMPI_DIR && make install -j${CORE_COUNT}
+    # cd ../..
+    # rm -fr ompi openmpi-$OMPI_VERSION.tar.gz
     # Set env variables so we can
     # compile our application
     export PATH=$OMPI_DIR/bin:$PATH
@@ -62,7 +62,7 @@ From: arezaii/pf_singularity:nv_base
     # cd ${DOWNLOAD_DIR}/mpich && wget -O mpich-$MPICH_VERSION.tar.gz $MPICH_URL && tar -xf mpich-$MPICH_VERSION.tar.gz
     # # Compile and install
     # cd ${DOWNLOAD_DIR}/mpich/mpich-$MPICH_VERSION && ./configure --prefix=$MPICH_DIR && make install -j${CORE_COUNT}
-    # cd ../..
+    # cd ..
     # rm -fr mpich mpich-$MPICH_VERSION.tar.gz
     # # Set env variables so we can
     # # compile our application

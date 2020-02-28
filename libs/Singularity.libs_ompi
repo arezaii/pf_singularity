@@ -11,8 +11,9 @@ From: arezaii/pf_singularity:ompi
     From: /path/to/singularity_libs
 
 %post    
-    
-    export CORE_COUNT=2
+    export PATH=/opt/rh/devtoolset-7/root/bin/:$PATH
+    export LD_LIBRARY_PATH=/opt/rh/devtoolset-7/root/lib:$LD_LIBRARY_PATH
+    export CORE_COUNT=$(nproc)
     HOME_DIR=/home/parflow
     export PARFLOW_LIB_DIR=${HOME_DIR}/pflib
     export DOWNLOAD_DIR=${HOME_DIR}/downloads
@@ -83,7 +84,7 @@ From: arezaii/pf_singularity:ompi
     wget ${HDF5_URL} && \
     tar -xf hdf5-${HDF5_VERSION}.tar.gz && \
     cd hdf5-${HDF5_VERSION} && \
-    CC=mpicc ./configure \
+    CC=mpicc CXX=mpicxx ./configure \
       --prefix=$HDF5_DIR \
       --enable-parallel && \
     make -j${CORE_COUNT} && make install -j${CORE_COUNT} && \
@@ -94,23 +95,23 @@ From: arezaii/pf_singularity:ompi
     #
     # NetCDF
     #
-    echo "Installing NetCDF"
-    export NETCDF_DIR=${PARFLOW_LIB_DIR}/netcdf
-    export NETCDF_VERSION=4.7.3
-    export NETCDF_URL="https://github.com/Unidata/netcdf-c/archive/v$NETCDF_VERSION.tar.gz"
-    mkdir -p $NETCDF_DIR
-    mkdir -p ${DOWNLOAD_DIR}/netcdf
-    cd ${DOWNLOAD_DIR}/netcdf
+    # echo "Installing NetCDF"
+    # export NETCDF_DIR=${PARFLOW_LIB_DIR}/netcdf
+    # export NETCDF_VERSION=4.7.3
+    # export NETCDF_URL="https://github.com/Unidata/netcdf-c/archive/v$NETCDF_VERSION.tar.gz"
+    # mkdir -p $NETCDF_DIR
+    # mkdir -p ${DOWNLOAD_DIR}/netcdf
+    # cd ${DOWNLOAD_DIR}/netcdf
 
-    wget ${NETCDF_URL} && \
-    tar -xf v${NETCDF_VERSION}.tar.gz && \
-    cd netcdf-c-${NETCDF_VERSION} && \
-    CC=mpicc CPPFLAGS=-I${HDF5_DIR}/include LDFLAGS=-L${HDF5_DIR}/lib \
-    ./configure --disable-shared --disable-dap --prefix=${NETCDF_DIR} && \
-    make -j${CORE_COUNT} && \
-    make install -j${CORE_COUNT} && \
-    cd .. && \
-    rm -fr netcdf-c-$NETCDF_VERSION v$NETCDF_VERSION.tar.gz
+    # wget ${NETCDF_URL} && \
+    # tar -xf v${NETCDF_VERSION}.tar.gz && \
+    # cd netcdf-c-${NETCDF_VERSION} && \
+    # CC=mpicc CXX=mpicxx CPPFLAGS=-I${HDF5_DIR}/include LDFLAGS=-L${HDF5_DIR}/lib \
+    # ./configure --disable-shared --disable-dap --prefix=${NETCDF_DIR} && \
+    # make -j${CORE_COUNT} && \
+    # make install -j${CORE_COUNT} && \
+    # cd .. && \
+    # rm -fr netcdf-c-$NETCDF_VERSION v$NETCDF_VERSION.tar.gz
 
 
     #
@@ -127,7 +128,7 @@ From: arezaii/pf_singularity:ompi
         https://wci.llnl.gov/content/assets/docs/simulation/computer-codes/silo/silo-${SILO_VERSION}/silo-${SILO_VERSION}.tar.gz && \
     tar -xf silo-${SILO_VERSION}.tar.gz && \
     cd silo-${SILO_VERSION} && \
-    ./configure  --prefix=$SILO_DIR --disable-silex --disable-hzip --disable-fpzip FC=/usr/bin/gfortran F77=/usr/bin/gfortran && \
+    ./configure  --prefix=$SILO_DIR --disable-silex --disable-hzip --disable-fpzip FC=gfortran F90=gfortran --with-hdf5=${PARFLOW_LIB_DIR}/hdf5/include,${PARFLOW_LIB_DIR}/hdf5/lib && \
     make install -j${CORE_COUNT} && \
     cd .. && \
     rm -fr silo-${SILO_VERSION} silo-${SILO_VERSION}.tar.gz
@@ -144,8 +145,8 @@ From: arezaii/pf_singularity:ompi
     wget https://github.com/hypre-space/hypre/archive/v${HYPRE_VERSION}.tar.gz && \
     tar xf v${HYPRE_VERSION}.tar.gz && \
     cd hypre-${HYPRE_VERSION}/src && \
+    CC=mpicc cxx=mpicxx && \
     ./configure --prefix=${HYPRE_DIR} && \
-    CC=mpicc && \
     make install -j${CORE_COUNT} && \
     cd .. && \
     rm -fr hypre-${HYPRE_VERSION} v${HYPRE_VERSION}.tar.gz

@@ -1,7 +1,7 @@
-#Bootstrap: shub
-#From: arezaii/pf_singularity:base
-Bootstrap: localimage
-From: ./singularity_ompi
+Bootstrap: shub
+From: arezaii/pf_singularity:nv_base
+#Bootstrap: localimage
+#From: ./singularity_nv_base
 %labels
     # Build the necessary LIBS for ParFlow on top of base OS image
 %help
@@ -10,8 +10,15 @@ From: ./singularity_ompi
     Bootstrap localimage
     From: /path/to/singularity_libs
 
-%post    
-    
+%post 
+    cat /etc/yum.repos.d/CentOS-Base.repo
+    yum -y update
+    yum -y install centos-release-scl
+    yum -y install devtoolset-6-gcc \
+    devtoolset-6-gcc-c++ \
+    devtoolset-6-libquadmath-devel \
+    devtoolset-6-gcc-gfortran
+
     export CORE_COUNT=2
     HOME_DIR=/home/parflow
     export PARFLOW_LIB_DIR=${HOME_DIR}/pflib
@@ -22,6 +29,32 @@ From: ./singularity_ompi
     #-----------------------------------------------------------------------------
     # Build libraries
     #-----------------------------------------------------------------------------
+    # shopt -s expand_aliases
+    # alias cmake=cmake=/usr/bin/cmake3
+    ln -s /usr/bin/cmake3 /usr/bin/cmake
+    #
+    # Rapids Memory Manager
+    #
+
+    echo "Installing RMM"
+    export PATH=/usr/local/cuda/bin:$PATH
+    export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+    export RMM_DIR=${PARFLOW_LIB_DIR}/rmm
+    export RMM_ROOT=${RMM_DIR}/install
+    export RMM_VERSION=0.10.0
+    export RMM_URL="https://github.com/rapidsai/rmm/archive/v${RMM_VERSION}.tar.gz"      
+    mkdir -p ${RMM_DIR}
+    mkdir -p ${DOWNLOAD_DIR}/rmm
+    cd ${DOWNLOAD_DIR}/rmm
+    #wget ${RMM_URL} && \
+    #tar xf v${RMM_VERSION}.tar.gz && \
+    #cd rmm-${RMM_VERSION} && \
+    git clone -b branch-0.10 --single-branch --recurse-submodules https://github.com/rapidsai/rmm.git &&\
+    cd rmm && \
+    ./build.sh librmm && \
+    cd .. && \
+    rm -fr rmm-${RMM_VERSION} v${RMM_VERSION}.tar.gz 
+
 
     #
     # Only build EITHER OMPI OR MPICH, not both!
@@ -32,16 +65,16 @@ From: ./singularity_ompi
     # 
     echo "Installing Open MPI"
     export OMPI_DIR=${PARFLOW_LIB_DIR}/ompi
-    # export OMPI_VERSION=4.0.1
-    # export OMPI_URL="https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-$OMPI_VERSION.tar.gz"
-    # mkdir -p ${DOWNLOAD_DIR}/ompi    
-    # mkdir -p $OMPI_DIR
-    # # Download
-    # cd ${DOWNLOAD_DIR}/ompi && wget -O openmpi-$OMPI_VERSION.tar.gz $OMPI_URL && tar -xf openmpi-$OMPI_VERSION.tar.gz
-    # # Compile and install
-    # cd ${DOWNLOAD_DIR}/ompi/openmpi-$OMPI_VERSION && ./configure --prefix=$OMPI_DIR && make install -j${CORE_COUNT}
-    # cd ../..
-    # rm -fr ompi openmpi-$OMPI_VERSION.tar.gz
+    export OMPI_VERSION=4.0.1
+    export OMPI_URL="https://download.open-mpi.org/release/open-mpi/v4.0/openmpi-$OMPI_VERSION.tar.gz"
+    mkdir -p ${DOWNLOAD_DIR}/ompi    
+    mkdir -p $OMPI_DIR
+    # Download
+    cd ${DOWNLOAD_DIR}/ompi && wget -O openmpi-$OMPI_VERSION.tar.gz $OMPI_URL && tar -xf openmpi-$OMPI_VERSION.tar.gz
+    # Compile and install
+    cd ${DOWNLOAD_DIR}/ompi/openmpi-$OMPI_VERSION && ./configure --prefix=$OMPI_DIR && make install -j${CORE_COUNT}
+    cd ../..
+    rm -fr ompi openmpi-$OMPI_VERSION.tar.gz
     # Set env variables so we can
     # compile our application
     export PATH=$OMPI_DIR/bin:$PATH
@@ -62,12 +95,18 @@ From: ./singularity_ompi
     # cd ${DOWNLOAD_DIR}/mpich && wget -O mpich-$MPICH_VERSION.tar.gz $MPICH_URL && tar -xf mpich-$MPICH_VERSION.tar.gz
     # # Compile and install
     # cd ${DOWNLOAD_DIR}/mpich/mpich-$MPICH_VERSION && ./configure --prefix=$MPICH_DIR && make install -j${CORE_COUNT}
-    # cd ..
+    # cd ../..
     # rm -fr mpich mpich-$MPICH_VERSION.tar.gz
     # # Set env variables so we can
     # # compile our application
     # export PATH=$MPICH_DIR/bin:$PATH
     # export LD_LIBRARY_PATH=$MPICH_DIR/lib:$LD_LIBRARY_PATH
+
+
+
+
+
+
 
 
     #

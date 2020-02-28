@@ -167,7 +167,9 @@ From: centos:7.4.1708
     
         
     git clone -b master --single-branch https://github.com/parflow/parflow.git parflow_seq && \
+    cd parflow_seq && \
     git checkout b1c408fcb99f1f242a3c0830517eda80515b6201 && \
+    cd .. && \
     mkdir -p build_seq && \
     cd build_seq && \
     cmake3 ../parflow_seq \
@@ -237,7 +239,9 @@ From: centos:7.4.1708
     #PARFLOW_MPIEXEC_EXTRA_FLAGS="--mca mpi_yield_when_idle 1 --oversubscribe --allow-run-as-root"
         
     git clone -b master --single-branch https://github.com/parflow/parflow.git parflow_par && \
+    cd parflow_par && \
     git checkout b1c408fcb99f1f242a3c0830517eda80515b6201 && \
+    cd .. && \
     mkdir -p build_par && \
     cd build_par && \
     cmake3 ../parflow_par \

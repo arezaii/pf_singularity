@@ -6,8 +6,8 @@ Each ParFlow container is built as a sci-app container, providing access to both
 builds of ParFlow
 
 ## About Apps
-- par = distributed build of ParFlow, -DPARFLOW_AMPS_SEQUENTIAL_IO=False
-- seq = sequential build of ParFlow, -DPARFLOW_AMPS_SEQUENTIAL_IO=True
+- par = distributed build of ParFlow, -DPARFLOW_AMPS_SEQUENTIAL_IO=True
+- seq = sequential build of ParFlow, -DPARFLOW_AMPS_SEQUENTIAL_IO=False
 
 to run either:
 ```bash
